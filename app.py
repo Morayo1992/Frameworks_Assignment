@@ -4,18 +4,21 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from wordcloud import WordCloud
 
-# Load data
+#import streamlit as st
+import pandas as pd
+
 @st.cache_data
 def load_data():
-    df = pd.read_csv("metadata.csv")
-    df['publish_time'] = pd.to_datetime(df['publish_time'], errors='coerce')
-    df['year'] = df['publish_time'].dt.year
+    # Load the smaller CSV that exists in the repo
+    df = pd.read_csv("metadata_sample.csv")
     return df
+
+st.title("Frameworks Assignment App")
 
 df = load_data()
 
-st.title("CORD-19 Data Explorer")
-st.write("Interactive exploration of COVID-19 research papers")
+st.write("### Preview of dataset")
+st.dataframe(df.head(20))
 
 # Year filter
 years = st.slider("Select year range", int(df['year'].min()), int(df['year'].max()), (2020, 2021))
