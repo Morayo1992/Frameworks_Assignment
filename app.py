@@ -4,19 +4,13 @@ import streamlit as st
 
 @st.cache_data
 def load_data():
-    # possible files to look for
-    possible_files = ["metadata.csv", "metadata_sample.csv"]
-
-    path = None
-    for file in possible_files:
-        if os.path.exists(file):
-            st.info(f"✅ Loaded data from `{file}`")
-            path = file
-            break
-
-    if path is None:
-        st.error("❌ No metadata file found. Please add either `metadata.csv` or `metadata_sample.csv` to the project folder.")
-        return pd.DataFrame()
+    try:
+        df = pd.read_csv("metadata.csv")
+    except FileNotFoundError:
+        df = pd.read_csv("metadata_sample.csv")  # fallback
+    df['publish_time'] = pd.to_datetime(df['publish_time'], errors='coerce')
+    df['year'] = df['publish_time'].dt.year
+    return df
 
     # Try reading the file safely
     try:
